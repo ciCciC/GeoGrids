@@ -1,0 +1,6 @@
+jupyter
+pandas
+geopandas
+numpy
+matplotlib
+missingno

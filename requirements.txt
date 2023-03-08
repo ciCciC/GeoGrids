@@ -4,3 +4,5 @@ geopandas
 numpy
 matplotlib
 missingno
+fastapi
+uvicorn

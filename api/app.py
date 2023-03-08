@@ -7,8 +7,7 @@ from .dataStore import load_segment, load_station, load_segments
 app = FastAPI(title='Geo2People')
 
 origins = [
-    "http://localhost",
-    'http://localhost:63342',
+    '*'
 ]
 
 app.add_middleware(

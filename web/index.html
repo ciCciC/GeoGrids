@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+    <script src="query.js"></script>
+    <script src="api.js"></script>
+    <script src="sidebar.js"></script>
+    <style>
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #buttons {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .button {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            width: 20%;
+            padding: 8px;
+            border-radius: 3px;
+            margin-top: 10px;
+            font-size: 12px;
+            text-align: center;
+            color: #fff;
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+
+        #button_search {
+            background: #ff9900;
+        }
+
+        #button_stations {
+            background: #00d0ff;
+        }
+
+        .rounded-rect {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 50px -25px black;
+        }
+
+        .flex-center {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            right: 0;
+        }
+
+        .sidebar-content {
+            position: absolute;
+            height: 80%;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 32px;
+            color: gray;
+            display: block;
+            padding: 10px;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            width: 1.3em;
+            height: 1.3em;
+            overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: -1.5em;
+        }
+
+        .sidebar-toggle:hover {
+            color: #0aa1cf;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            transition: transform 1s;
+            z-index: 1;
+            width: 40%;
+            height: 100%;
+            margin-top: 25px;
+        }
+
+        .right.collapsed {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+      type="text/css">
+
+<div id="map">
+    <div id="right" class="sidebar flex-center right collapsed">
+        <div class="sidebar-content rounded-rect flex-center"></div>
+    </div>
+</div>
+
+<ul id="buttons">
+    <li id="button_search" class="button">Search</li>
+    <li id="button_stations" class="button">Stations</li>
+</ul>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiY2ljaWMiLCJhIjoiY2xkMDh1bzFoMHE5ejNzbzFwOWxjZTE4eCJ9.BVObDkUMFWt_MuzpQf4MYA';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [4.895168, 52.370216],
+        zoom: 9
+    });
+
+    const geoCoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        localGeocoder: coordinatesGeocoder,
+        zoom: 13,
+        placeholder: 'Probeer: Amsterdam',
+        mapboxgl: mapboxgl,
+        reverseGeocode: true
+    })
+
+    geoCoder.on('result', (x) => {
+        // fetch elec netten, verzorgingsgebied, station
+        const coords = x.result.geometry.coordinates
+
+        fetchSegment(coords[0], coords[1])
+            .then((data) => {
+
+                if (map.getSource('address')) {
+                    map.getSource('address').setData(data);
+                } else {
+                    map.addSource('address', {
+                        'type': 'geojson',
+                        'data': data
+                    });
+
+                    map.addLayer({
+                        'id': 'address_fill',
+                        'type': 'fill',
+                        'source': 'address',
+                        'layout': {},
+                        'paint': {
+                            'fill-color': '#0080ff',
+                            'fill-opacity': 0.2
+                        }
+                    });
+
+                    // Add a black outline around the polygon.
+                    map.addLayer({
+                        'id': 'address_outline',
+                        'type': 'line',
+                        'source': 'address',
+                        'layout': {},
+                        'paint': {
+                            'line-color': '#000',
+                            'line-width': 3
+                        }
+                    });
+                }
+            })
+
+        fetchStation(coords[0], coords[1])
+            .then((data) => {
+
+                if (map.getSource('station')) {
+                    map.getSource('station').setData(data);
+                } else {
+                    map.addSource('station', {
+                        'type': 'geojson',
+                        'data': data
+                    });
+
+                    map.addLayer({
+                        'id': 'station_circle',
+                        'type': 'circle',
+                        'source': 'station',
+                        'layout': {},
+                        'paint': {
+                            'circle-stroke-color': '#ff0000',
+                            'circle-opacity': 0,
+                            'circle-stroke-width': 5,
+                            'circle-radius': 10
+                        }
+                    });
+                }
+            })
+    })
+
+    map.on('click', 'address_fill', (e) => {
+        toggleSidebar(e.features[0].properties);
+    });
+
+    map.on('mouseenter', 'address_fill', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'address_fill', () => {
+        map.getCanvas().style.cursor = '';
+    });
+
+    map.addControl(geoCoder);
+    map.addControl(new mapboxgl.FullscreenControl());
+
+    document.getElementById('buttons').addEventListener('click', (event) => {
+        const buttonType = event.target.id;
+        let searchEl = document.getElementsByClassName('mapboxgl-ctrl-geocoder mapboxgl-ctrl')
+        searchEl[0].style.display = buttonType === "button_search" ? 'block' : 'none';
+    });
+
+    document.getElementById('button_search').addEventListener('click', (event) => {
+        if (map.getSource('segments')) {
+            map.removeLayer('segments_fill');
+            map.removeLayer('segments_outline');
+            map.removeSource('segments');
+        }
+    })
+
+    let segmentsPoppup = new mapboxgl.Popup();
+
+    document.getElementById('button_stations').addEventListener('click', (event) => {
+        if (map.getSource('address')) {
+            map.removeLayer('address_fill');
+            map.removeLayer('address_outline');
+            map.removeSource('address');
+
+            map.removeLayer('station_circle');
+            map.removeSource('station');
+        }
+
+        fetchSegments()
+            .then((data) => {
+
+                if (map.getSource('segments')) {
+                    map.getSource('segments').setData(data);
+                } else {
+                    map.addSource('segments', {
+                        'type': 'geojson',
+                        'data': data
+                    });
+
+                    map.addLayer({
+                        'id': 'segments_fill',
+                        'type': 'fill',
+                        'source': 'segments',
+                        'layout': {},
+                        'paint': {
+                            'fill-color': {
+                                property: 'netbeheerder',
+                                type: 'categorical',
+                                stops: [
+                                    ['Enexis', '#910ae8'],
+                                    ['Liander', '#fcfc03'],
+                                    ['Stedin', '#fc0303'],
+                                    ['Westland Infra', '#84ff00']
+                                ]
+                            },
+                            'fill-opacity': 0.5
+                        }
+                    });
+
+                    map.addLayer({
+                        'id': 'segments_outline',
+                        'type': 'line',
+                        'source': 'segments',
+                        'layout': {},
+                        'paint': {
+                            'line-color': '#000',
+                            'line-width': 3
+                        }
+                    });
+                }
+            })
+
+        map.on('mousemove', 'segments_fill', function (e) {
+            console.log(e.features[0])
+            segmentsPoppup
+                .setLngLat(e.lngLat)
+                .setHTML(
+                    '<p>Station: ' + e.features[0].properties.station + '</p>' +
+                    '<p>Netbeheerder: ' + e.features[0].properties.netbeheerder + '</p>'
+                )
+                .addTo(map);
+        })
+    });
+
+</script>
+
+</body>
+</html>

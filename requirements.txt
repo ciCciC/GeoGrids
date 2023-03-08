@@ -1,8 +1,10 @@
 jupyter
 pandas
-geopandas
+geopandas~=0.12.2
 numpy
 matplotlib
 missingno
-fastapi
+fastapi~=0.92.0
 uvicorn
+pyproj~=3.4.1
+shapely~=2.0.1

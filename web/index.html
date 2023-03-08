@@ -6,10 +6,16 @@
     <title>Title</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
+
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+
     <script src="query.js"></script>
     <script src="api.js"></script>
     <script src="sidebar.js"></script>
+    <script src="layerNet.js"></script>
+    <script src="listeners.js"></script>
     <style>
         #map {
             position: absolute;
@@ -27,23 +33,28 @@
             display: inline-block;
             position: relative;
             cursor: pointer;
-            width: 20%;
-            padding: 8px;
-            border-radius: 3px;
+            width: 10%;
+            padding: 15px;
+            border-radius: 10px;
             margin-top: 10px;
-            font-size: 12px;
+            font-size: 14px;
             text-align: center;
-            color: #fff;
-            font-family: sans-serif;
+            font-family: 'Operator Mono', 'Source Sans Pro', Menlo, Monaco, Consolas, Courier New, monospace;
             font-weight: bold;
         }
 
         #button_search {
-            background: #ff9900;
+            background: rgb(15, 94, 224);
+            color: rgba(255, 255, 255);
         }
 
         #button_stations {
-            background: #00d0ff;
+            background: rgb(15, 94, 224);
+            color: rgba(255, 255, 255);
+        }
+
+        #button_search:hover, #button_stations:hover {
+            background: rgb(29, 104, 227);
         }
 
         .rounded-rect {
@@ -97,6 +108,64 @@
         .right.collapsed {
             transform: translateX(100%);
         }
+
+        .collapsible {
+            background-color: #5b71de;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #0c30e0;
+        }
+
+        .collapsible:after {
+            content: '\002B';
+            color: white;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+
+        .active:after {
+            content: "\2212";
+        }
+
+        .content {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: #ffffff;
+        }
+
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .sidebar a:hover {
+            color: #dedede;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
     </style>
 </head>
 <body>
@@ -107,7 +176,24 @@
 
 <div id="map">
     <div id="right" class="sidebar flex-center right collapsed">
-        <div class="sidebar-content rounded-rect flex-center"></div>
+        <div class="sidebar-content rounded-rect flex-center">
+            <a class="closebtn" onclick="toggleSidebar()">×</a>
+            <div id='contentBasic'></div>
+
+            <button class="collapsible">Capacity</button>
+            <div id='contentCapacity' class="content">
+            </div>
+
+            <button class="collapsible">Investment</button>
+            <div id='contentInvestment' class="content">
+            </div>
+
+            <button class="collapsible">Expectation Invoeding</button>
+            <div id='contentExpectationInvoeding' class="content"></div>
+
+            <button class="collapsible">Expectation Afname</button>
+            <div id='contentExpectationAfname' class="content"></div>
+        </div>
     </div>
 </div>
 
@@ -121,9 +207,16 @@
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v12',
+        // style: 'mapbox://styles/mapbox/dark-v11',
+        // style: 'mapbox://styles/mapbox/navigation-night-v1',
         center: [4.895168, 52.370216],
         zoom: 9
     });
+
+    let hoveredStateId = null;
+    let popupNetten = new mapboxgl.Popup({offset: [0, -40]});
+
+    map.on('load', () => layerNet(map, popupNetten, hoveredStateId))
 
     const geoCoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
@@ -155,7 +248,7 @@
                         'source': 'address',
                         'layout': {},
                         'paint': {
-                            'fill-color': '#0080ff',
+                            'fill-color': '#ffd500',
                             'fill-opacity': 0.2
                         }
                     });
@@ -269,7 +362,7 @@
                                     ['Westland Infra', '#84ff00']
                                 ]
                             },
-                            'fill-opacity': 0.5
+                            'fill-opacity': 0.2
                         }
                     });
 
@@ -286,17 +379,23 @@
                 }
             })
 
-        map.on('mousemove', 'segments_fill', function (e) {
-            console.log(e.features[0])
-            segmentsPoppup
-                .setLngLat(e.lngLat)
-                .setHTML(
-                    '<p>Station: ' + e.features[0].properties.station + '</p>' +
-                    '<p>Netbeheerder: ' + e.features[0].properties.netbeheerder + '</p>'
-                )
-                .addTo(map);
-        })
+        listenerSegment(map, segmentsPoppup);
     });
+
+    const coll = document.getElementsByClassName("collapsible");
+    let i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
 
 </script>
 

@@ -4,7 +4,7 @@ https://magazines.tennet.eu/open-innovation-programme/open-innovation-programme
 <pre style="color:yellow;background-color:black">
 鑓塵幗膂蓿f寥寢膃暠瘉甅甃槊槎f碣綮瘋聟碯颱亦尓㍍i:i:i;;:;:: : :
 澣幗嶌塹傴嫩榛畝皋i袍耘蚌紕欒儼巓襴踟篁f罵f亦尓㍍i:i:i;;:;:: : :
-漲蔭甃縟諛f麭窶膩I嶮薤篝爰曷樔黎㌢´　　｀ⅷ踟亦尓㍍i:i:i;;:;:: : :
+漲蔭甃縟諛f麭窶膩I嶮薤篝爰曷樔黎㌢　　｀ⅷ踟亦尓㍍i:i:i;;:;:: : :
 蔕漓滿f蕓蟇踴踴Geo2People裲f睚　　　　　贒憊亦尓㍍i:i:i;;:;:: : :
 榊甃齊爰f懈橈燗殪幢緻I翰儂樔黎夢'”　 　 ,ｨ傾篩縒亦尓㍍i:i:i;;:;:: : :
 箋聚蜚壊劑薯i暹盥皋袍i耘蚌紕偸′　　　 雫寬I爰曷f亦尓㍍i:i:i;;:;:: : :

@@ -1,33 +1,36 @@
 const listenerFocusNet = async (map, hoveredStateId) => {
-    map.on('mousemove', 'routeMidden', function (e) {
+    const ids = ['routeMidden', 'routeLow']
+    const sources = ['middenspanningskabels', 'laagspanningskabels']
+    map.on('mousemove', ids, function (e) {
         if (e.features.length > 0) {
             if (hoveredStateId !== null) {
-                map.setFeatureState(
-                    {source: 'middenspanningskabels', id: hoveredStateId},
+
+                sources.forEach((sourceName) => map.setFeatureState(
+                    {source: sourceName, id: hoveredStateId},
                     {hover: false}
-                );
+                ))
             }
             hoveredStateId = e.features[0].id;
-            map.setFeatureState(
-                {source: 'middenspanningskabels', id: hoveredStateId},
-                {hover: true}
-            );
+            sources.forEach((sourceName) => map.setFeatureState(
+                    {source: sourceName, id: hoveredStateId},
+                    {hover: true}
+                ))
         }
     })
 
-    map.on('mouseleave', 'routeMidden', () => {
+    map.on('mouseleave', ids, () => {
         if (hoveredStateId !== null) {
-            map.setFeatureState(
-                {source: 'middenspanningskabels', id: hoveredStateId},
-                {hover: false}
-            );
+            sources.forEach((sourceName) => map.setFeatureState(
+                    {source: sourceName, id: hoveredStateId},
+                    {hover: false}
+                ))
         }
         hoveredStateId = null;
     });
 }
 
 const listenerNetten = async (map, popupNetten) => {
-    const ids = ['routeMidden', 'routeHoog', 'routeHoogDashed']
+    const ids = ['routeMidden', 'routeHoog', 'routeHoogDashed', 'routeLow']
 
     map.on('mousemove', ids, function (e) {
         popupNetten

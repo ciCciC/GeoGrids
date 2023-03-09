@@ -79,6 +79,7 @@
             color: gray;
             display: block;
             padding: 10px;
+            overflow-y: scroll;
         }
 
         .sidebar-toggle {
@@ -100,7 +101,7 @@
         .sidebar {
             transition: transform 1s;
             z-index: 1;
-            width: 40%;
+            width: calc(100% / 3);
             height: 100%;
             margin-top: 25px;
         }
@@ -206,8 +207,8 @@
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2ljaWMiLCJhIjoiY2xkMDh1bzFoMHE5ejNzbzFwOWxjZTE4eCJ9.BVObDkUMFWt_MuzpQf4MYA';
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
-        // style: 'mapbox://styles/mapbox/dark-v11',
+        // style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/mapbox/dark-v11',
         // style: 'mapbox://styles/mapbox/navigation-night-v1',
         center: [4.895168, 52.370216],
         zoom: 9
@@ -215,6 +216,12 @@
 
     let hoveredStateId = null;
     let popupNetten = new mapboxgl.Popup({offset: [0, -40]});
+
+    // const markerElement = document.createElement('div');
+    // markerElement.id = 'markerStation';
+    // markerElement.style.color = 'red';
+
+    let markerStation = new mapboxgl.Marker({color: 'red'});
 
     map.on('load', () => layerNet(map, popupNetten, hoveredStateId))
 
@@ -228,7 +235,6 @@
     })
 
     geoCoder.on('result', (x) => {
-        // fetch elec netten, verzorgingsgebied, station
         const coords = x.result.geometry.coordinates
 
         fetchSegment(coords[0], coords[1])
@@ -265,11 +271,54 @@
                         }
                     });
                 }
+
+                fetchNets(data.properties.station, 'low')
+                    .then((dataNet) => {
+
+                        if (map.getSource('laagspanningskabels')) {
+                            map.getSource('laagspanningskabels').setData(dataNet)
+                        } else {
+                            map.addSource('laagspanningskabels', {
+                                'type': 'geojson',
+                                'data': dataNet,
+                                'generateId': true
+                            });
+
+                            map.addLayer({
+                                'id': 'routeLow',
+                                'type': 'line',
+                                'source': 'laagspanningskabels',
+                                'layout': {
+                                    'line-join': 'round',
+                                    'line-cap': 'round'
+                                },
+                                'paint': {
+                                    'line-color': [
+                                        'case',
+                                        ['boolean', ['feature-state', 'hover'], false],
+                                        '#ff0000',
+                                        '#ee00ff'
+                                    ],
+                                    'line-opacity': [
+                                        'case',
+                                        ['boolean', ['feature-state', 'hover'], false],
+                                        1,
+                                        0.5
+                                    ],
+                                    'line-width': [
+                                        'case',
+                                        ['boolean', ['feature-state', 'hover'], false],
+                                        4,
+                                        2
+                                    ],
+                                }
+                            });
+                        }
+                    })
             })
 
         fetchStation(coords[0], coords[1])
             .then((data) => {
-
                 if (map.getSource('station')) {
                     map.getSource('station').setData(data);
                 } else {
@@ -277,20 +326,11 @@
                         'type': 'geojson',
                         'data': data
                     });
-
-                    map.addLayer({
-                        'id': 'station_circle',
-                        'type': 'circle',
-                        'source': 'station',
-                        'layout': {},
-                        'paint': {
-                            'circle-stroke-color': '#ff0000',
-                            'circle-opacity': 0,
-                            'circle-stroke-width': 5,
-                            'circle-radius': 10
-                        }
-                    });
                 }
+
+                markerStation
+                    .setLngLat(data.geometry.coordinates)
+                    .addTo(map);
             })
     })
 

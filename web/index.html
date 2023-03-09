@@ -79,7 +79,7 @@
             color: gray;
             display: block;
             padding: 10px;
-            overflow-y:scroll;
+            overflow-y: scroll;
         }
 
         .sidebar-toggle {
@@ -217,6 +217,12 @@
     let hoveredStateId = null;
     let popupNetten = new mapboxgl.Popup({offset: [0, -40]});
 
+    // const markerElement = document.createElement('div');
+    // markerElement.id = 'markerStation';
+    // markerElement.style.color = 'red';
+
+    let markerStation = new mapboxgl.Marker({color: 'red'});
+
     map.on('load', () => layerNet(map, popupNetten, hoveredStateId))
 
     const geoCoder = new MapboxGeocoder({
@@ -313,7 +319,6 @@
 
         fetchStation(coords[0], coords[1])
             .then((data) => {
-
                 if (map.getSource('station')) {
                     map.getSource('station').setData(data);
                 } else {
@@ -321,20 +326,11 @@
                         'type': 'geojson',
                         'data': data
                     });
-
-                    map.addLayer({
-                        'id': 'station_circle',
-                        'type': 'circle',
-                        'source': 'station',
-                        'layout': {},
-                        'paint': {
-                            'circle-stroke-color': '#ff0000',
-                            'circle-opacity': 0,
-                            'circle-stroke-width': 5,
-                            'circle-radius': 10
-                        }
-                    });
                 }
+
+                markerStation
+                    .setLngLat(data.geometry.coordinates)
+                    .addTo(map);
             })
     })
 

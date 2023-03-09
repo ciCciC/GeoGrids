@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from . import responseJson
-from .dataStore import load_segment, load_station, load_segments
+from .dataStore import load_segment, load_station, load_segments, load_nets
 
 app = FastAPI(title='Geo2People')
 
@@ -33,4 +33,10 @@ async def root(lat: float, lon: float):
 @app.get("/segments")
 async def root():
     result = load_segments()
+    return responseJson.features_to_json(result)
+
+
+@app.get("/nets/low")
+async def root(station: str):
+    result = load_nets(station)
     return responseJson.features_to_json(result)

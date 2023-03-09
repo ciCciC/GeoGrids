@@ -12,11 +12,6 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
         'generateId': true
     });
 
-    // map.addSource('laagpanningskabels', {
-    //     'type': 'geojson',
-    //     'data': 'http://127.0.0.1:8000/static/laagpanningskabels.geojson'
-    // });
-
     map.addLayer({
         'id': 'routeMidden',
         'type': 'line',
@@ -114,20 +109,6 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
     }
 
     animateDashArray(0);
-
-    // map.addLayer({
-    //     'id': 'routeLaag',
-    //     'type': 'line',
-    //     'source': 'laagpanningskabels',
-    //     'layout': {
-    //         'line-join': 'round',
-    //         'line-cap': 'round'
-    //     },
-    //     'paint': {
-    //         'line-color': '#ff0000',
-    //         'line-width': 3,
-    //     }
-    // });
 
     await listenerFocusNet(map, hoveredStateId)
     await listenerNetten(map, popupNetten)

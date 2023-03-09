@@ -29,3 +29,15 @@ const fetchSegments = async () => {
 
     return response.json();
 }
+
+const fetchNets = async (station, level) => {
+    let url = "http://127.0.0.1:8000/nets/" + level
+    url += '?station=' + station
+    const response = await fetch(url, {
+        "headers": {
+            'Content-Type': 'application/json'
+        },
+    });
+
+    return response.json();
+}

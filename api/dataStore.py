@@ -6,6 +6,7 @@ CRS = 4326
 
 stations = gpd.read_parquet('data/atom/stations.parquet')
 verzorgingsgebied = gpd.read_parquet('data/atom/verzorgingsgebied.parquet')
+laagspanningskabels_x_station = gpd.read_parquet('data/atom/laagspanningskabels_x_station.pyarrow')
 
 stations = stations.to_crs(pyproj.CRS.from_epsg(CRS))
 verzorgingsgebied = verzorgingsgebied.to_crs(pyproj.CRS.from_epsg(CRS))
@@ -41,7 +42,14 @@ def load_station(lat, lon):
 
 
 def load_segments():
-    cols = ['station', 'netbeheerder', 'status', 'beschikbareCapaciteitInvoedingHuidigMva', 'beschikbareCapaciteitAfnameHuidigMva',
+    cols = ['station', 'netbeheerder', 'status', 'beschikbareCapaciteitInvoedingHuidigMva',
+            'beschikbareCapaciteitAfnameHuidigMva',
             'verwachtJaarVanOverbelastingInvoeding', 'verwachtJaarVanOverbelastingAfname', 'geometry']
 
     return verzorgingsgebied[cols]
+
+
+def load_nets(station):
+    nets = laagspanningskabels_x_station[laagspanningskabels_x_station.station == station]
+    print(len(nets))
+    return nets

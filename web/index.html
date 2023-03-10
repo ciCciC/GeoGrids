@@ -215,12 +215,16 @@
 <div id="menu">
     <div>
         <input id="check-zipcode" type="checkbox" name="rtoggle" value="zipcode_segments_outline+zipcode_text">
-        <label for="check-zipcode">Zipcodes</label>
+        <label for="check-zipcode">Zipcode names</label>
     </div>
-<!--    <div>-->
-<!--        <input id="check-another" type="checkbox" name="rtoggle" value="anotherFeature">-->
-<!--        <label for="check-another">Another feature</label>-->
-<!--    </div>-->
+    <div>
+        <input id="check-zipcodesjv" type="checkbox" name="rtoggle" value="zipcode_segments_outline+zipcode_sjv">
+        <label for="check-zipcodesjv">Zipcodes x SJV</label>
+    </div>
+    <div>
+        <input id="check-segmentsjv" type="checkbox" name="rtoggle" value="segments_sjv">
+        <label for="check-segmentsjv">Segment x SJV</label>
+    </div>
 </div>
 
 <script>
@@ -378,11 +382,33 @@
                                     'text-field': ['get', 'zipcode'],
                                     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
                                     'text-size': 12
+                                },
+                                paint: {
+                                    'text-color': '#8d0be1',
+                                    'text-halo-color': 'rgba(255,255,255,0.3)',
+                                    'text-halo-width': 4
+                                }
+                            });
+
+                            map.addLayer({
+                                id: 'zipcode_sjv',
+                                type: 'symbol',
+                                source: 'zipcodeSegment',
+                                layout: {
+                                    'text-field': ['get', 'mean_svj'],
+                                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                                    'text-size': 12,
+                                },
+                                paint: {
+                                    'text-color': '#8d0be1',
+                                    'text-halo-color': 'rgba(255,255,255,0.3)',
+                                    'text-halo-width': 4
                                 }
                             });
 
                             map.setLayoutProperty('zipcode_segments_outline', 'visibility', 'none');
                             map.setLayoutProperty('zipcode_text', 'visibility', 'none');
+                            map.setLayoutProperty('zipcode_sjv', 'visibility', 'none');
                         }
                     })
             })
@@ -484,6 +510,24 @@
                             'line-width': 3
                         }
                     });
+
+                    map.addLayer({
+                        id: 'segments_sjv',
+                        type: 'symbol',
+                        source: 'segments',
+                        layout: {
+                            'text-field': ['get', 'mu_sjv'],
+                            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                            'text-size': 12
+                        },
+                        paint: {
+                            'text-color': '#8d0be1',
+                            'text-halo-color': 'rgba(255,255,255,0.3)',
+                            'text-halo-width': 2
+                        }
+                    });
+
+                    map.setLayoutProperty('segments_sjv', 'visibility', 'none');
                 }
             })
 

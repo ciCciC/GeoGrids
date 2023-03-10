@@ -22,7 +22,7 @@ const toggleSidebar = async (properties=null) => {
 }
 
 const basicContent = async (properties) => {
-    basicCols = ['station', 'netbeheerder', 'status']
+    basicCols = ['station', 'netbeheerder', 'status', 'mu_usage_kwh', 'mu_usage_kw', 'mu_usage_mva']
 
     let content = document.getElementById('contentBasic')
     content.innerHTML = '';

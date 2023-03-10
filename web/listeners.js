@@ -1,29 +1,37 @@
 const listenerFocusNet = async (map, hoveredStateId) => {
     const ids = ['routeMidden', 'routeLow']
     const sources = ['middenspanningskabels', 'laagspanningskabels']
-    map.on('mousemove', ids, function (e) {
-        if (e.features.length > 0) {
-            if (hoveredStateId !== null) {
+    map.on('mousemove', ids, (e) => {
 
-                sources.forEach((sourceName) => map.setFeatureState(
+        if (e.features.length > 0) {
+            const sourceName = e.features[0].source
+
+            if (hoveredStateId !== null) {
+                map.setFeatureState(
                     {source: sourceName, id: hoveredStateId},
                     {hover: false}
-                ))
+                )
             }
+
             hoveredStateId = e.features[0].id;
-            sources.forEach((sourceName) => map.setFeatureState(
-                    {source: sourceName, id: hoveredStateId},
-                    {hover: true}
-                ))
+
+            map.setFeatureState(
+                {source: sourceName, id: hoveredStateId},
+                {hover: true}
+            )
         }
     })
 
-    map.on('mouseleave', ids, () => {
+    map.on('mouseleave', ids, (e) => {
         if (hoveredStateId !== null) {
-            sources.forEach((sourceName) => map.setFeatureState(
-                    {source: sourceName, id: hoveredStateId},
-                    {hover: false}
-                ))
+            sources.forEach((sourceName) => {
+                if (map.getSource(sourceName)) {
+                    map.setFeatureState(
+                        {source: sourceName, id: hoveredStateId},
+                        {hover: false}
+                    )
+                }
+            })
         }
         hoveredStateId = null;
     });

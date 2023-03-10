@@ -16,6 +16,7 @@
     <script src="sidebar.js"></script>
     <script src="layerNet.js"></script>
     <script src="listeners.js"></script>
+    <script src="helper.js"></script>
     <style>
         #map {
             position: absolute;
@@ -167,6 +168,14 @@
             font-size: 36px;
             margin-left: 50px;
         }
+
+        #menu {
+            top: 50%;
+            position: absolute;
+            background: #efefef;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -203,24 +212,29 @@
     <li id="button_stations" class="button">Stations</li>
 </ul>
 
+<div id="menu">
+    <div>
+        <input id="check-zipcode" type="checkbox" name="rtoggle" value="zipcode_segments_outline+zipcode_text">
+        <label for="check-zipcode">Zipcodes</label>
+    </div>
+<!--    <div>-->
+<!--        <input id="check-another" type="checkbox" name="rtoggle" value="anotherFeature">-->
+<!--        <label for="check-another">Another feature</label>-->
+<!--    </div>-->
+</div>
+
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2ljaWMiLCJhIjoiY2xkMDh1bzFoMHE5ejNzbzFwOWxjZTE4eCJ9.BVObDkUMFWt_MuzpQf4MYA';
     const map = new mapboxgl.Map({
         container: 'map',
-        // style: 'mapbox://styles/mapbox/streets-v12',
-        style: 'mapbox://styles/mapbox/dark-v11',
-        // style: 'mapbox://styles/mapbox/navigation-night-v1',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        // style: 'mapbox://styles/mapbox/dark-v11',
         center: [4.895168, 52.370216],
         zoom: 9
     });
 
     let hoveredStateId = null;
     let popupNetten = new mapboxgl.Popup({offset: [0, -40]});
-
-    // const markerElement = document.createElement('div');
-    // markerElement.id = 'markerStation';
-    // markerElement.style.color = 'red';
-
     let markerStation = new mapboxgl.Marker({color: 'red'});
 
     map.on('load', () => layerNet(map, popupNetten, hoveredStateId))
@@ -254,12 +268,11 @@
                         'source': 'address',
                         'layout': {},
                         'paint': {
-                            'fill-color': '#ffd500',
-                            'fill-opacity': 0.2
+                            'fill-color': 'rgba(255,213,0,0.3)',
+                            'fill-opacity': 0.1
                         }
                     });
 
-                    // Add a black outline around the polygon.
                     map.addLayer({
                         'id': 'address_outline',
                         'type': 'line',
@@ -267,9 +280,24 @@
                         'layout': {},
                         'paint': {
                             'line-color': '#000',
-                            'line-width': 3
+                            'line-width': 3,
+                            'line-opacity': 0.5
                         }
                     });
+
+                    map.addLayer({
+                        'id': 'address_outline_dashed',
+                        'type': 'line',
+                        'source': 'address',
+                        'layout': {},
+                        'paint': {
+                            'line-color': '#fcfbfb',
+                            'line-width': 3,
+                            'line-dasharray': [0, 4, 3]
+                        }
+                    });
+
+                    animateDash('address_outline_dashed')
                 }
 
                 fetchNets(data.properties.station, 'low')
@@ -313,6 +341,48 @@
                                     ],
                                 }
                             });
+                        }
+                    })
+
+                fetchZipcodeSegment(data.properties.station)
+                    .then((data) => {
+
+                        // console.log(data)
+
+                        if (map.getSource('zipcodeSegment')) {
+                            map.getSource('zipcodeSegment').setData(data)
+                        } else {
+                            map.addSource('zipcodeSegment', {
+                                'type': 'geojson',
+                                'data': data,
+                                'generateId': true
+                            });
+
+                            map.addLayer({
+                                'id': 'zipcode_segments_outline',
+                                'type': 'line',
+                                'source': 'zipcodeSegment',
+                                'layout': {},
+                                'paint': {
+                                    'line-color': '#000000',
+                                    'line-width': 2,
+                                    'line-opacity': 0.5,
+                                }
+                            });
+
+                            map.addLayer({
+                                id: 'zipcode_text',
+                                type: 'symbol',
+                                source: 'zipcodeSegment',
+                                layout: {
+                                    'text-field': ['get', 'zipcode'],
+                                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                                    'text-size': 12
+                                }
+                            });
+
+                            map.setLayoutProperty('zipcode_segments_outline', 'visibility', 'none');
+                            map.setLayoutProperty('zipcode_text', 'visibility', 'none');
                         }
                     })
             })
@@ -369,9 +439,7 @@
         if (map.getSource('address')) {
             map.removeLayer('address_fill');
             map.removeLayer('address_outline');
-            map.removeSource('address');
-
-            map.removeLayer('station_circle');
+            // map.removeSource('address');
             map.removeSource('station');
         }
 
@@ -421,6 +489,22 @@
 
         listenerSegment(map, segmentsPoppup);
     });
+
+    const checkBoxList = document.getElementById('menu');
+    const inputs = checkBoxList.getElementsByTagName('input');
+
+    for (const input of inputs) {
+        input.onclick = (layer) => {
+            const layerId = layer.target.value;
+            const checked = layer.target.checked
+
+            if (layerId.includes('+')) {
+                layerId.split('+').forEach((l) => map.setLayoutProperty(l, 'visibility', checked ? 'visible' : 'none'))
+            } else {
+                map.setLayoutProperty(layerId, 'visibility', checked ? 'visible' : 'none')
+            }
+        };
+    }
 
     const coll = document.getElementsByClassName("collapsible");
     let i;

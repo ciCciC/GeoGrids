@@ -1,4 +1,4 @@
-const fetchy = async (lat, lon, end='') => {
+const fetchy = async (lat, lon, end = '') => {
     let url = "http://127.0.0.1:8000/"
     url += end + '?lat=' + lat + '&lon=' + lon
     const response = await fetch(url, {
@@ -15,7 +15,7 @@ const fetchSegment = async (lat, lon) => {
     return fetchy(lat, lon)
 }
 
-const fetchStation  = async (lat, lon) => {
+const fetchStation = async (lat, lon) => {
     return fetchy(lat, lon, 'station')
 }
 
@@ -32,6 +32,18 @@ const fetchSegments = async () => {
 
 const fetchNets = async (station, level) => {
     let url = "http://127.0.0.1:8000/nets/" + level
+    url += '?station=' + station
+    const response = await fetch(url, {
+        "headers": {
+            'Content-Type': 'application/json'
+        },
+    });
+
+    return response.json();
+}
+
+const fetchZipcodeSegment = async (station) => {
+    let url = "http://127.0.0.1:8000/nets/zipcode_segments"
     url += '?station=' + station
     const response = await fetch(url, {
         "headers": {

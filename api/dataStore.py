@@ -1,12 +1,17 @@
 import geopandas as gpd
 import pyproj
 from shapely import Point
+import pandas as pd
 
 CRS = 4326
 
 stations = gpd.read_parquet('data/atom/stations.parquet')
 verzorgingsgebied = gpd.read_parquet('data/atom/verzorgingsgebied.parquet')
 laagspanningskabels_x_station = gpd.read_parquet('data/atom/laagspanningskabels_x_station.pyarrow')
+postcode_segments_x_station = gpd.read_parquet('data/atom/postcode_segments_x_station.pyarrow')\
+    .rename(columns={'PC6': 'zipcode'})
+
+electricity_usage_x_zipcode = pd.read_parquet('data/atom/liander_zipcodes_elk_folded.parquet')
 
 stations = stations.to_crs(pyproj.CRS.from_epsg(CRS))
 verzorgingsgebied = verzorgingsgebied.to_crs(pyproj.CRS.from_epsg(CRS))
@@ -53,5 +58,9 @@ def load_segments():
 
 def load_nets(station):
     nets = laagspanningskabels_x_station[laagspanningskabels_x_station.station == station]
-    print(len(nets))
     return nets
+
+
+def load_zipcode_segments(station):
+    zipcode_segments = postcode_segments_x_station[postcode_segments_x_station.station == station][['zipcode', 'geometry']]
+    return zipcode_segments

@@ -67,7 +67,8 @@ const listenerSegment = async (map, segmentsPoppup) => {
             .setLngLat(e.lngLat)
             .setHTML(
                 '<p>Station: ' + e.features[0].properties.station + '</p>' +
-                '<p>Netbeheerder: ' + e.features[0].properties.netbeheerder + '</p>'
+                '<p>Netbeheerder: ' + e.features[0].properties.netbeheerder + '</p>' +
+                '<p>Mean SJV: ' + e.features[0].properties.mu_sjv + '</p>'
             )
             .addTo(map);
     })

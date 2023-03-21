@@ -1,55 +1,46 @@
-const fetchy = async (lat, lon, end = '') => {
-    let url = "http://127.0.0.1:8000/"
-    url += end + '?lat=' + lat + '&lon=' + lon
-    const response = await fetch(url, {
-        "headers": {
-            'Content-Type': 'application/json'
-        },
-    });
+const base_url = 'http://127.0.0.1:8000/'
+const init = {
+    "headers": {
+        'Content-Type': 'application/json'
+    },
+}
 
+
+const fetchy = async (url) => {
+    const response = await fetch(url, init);
     return response.json();
+}
+
+const fetchyByCoord = async (lat, lon, end = '') => {
+    return fetchy(base_url + end + '?lat=' + lat + '&lon=' + lon);
 }
 
 
 const fetchSegment = async (lat, lon) => {
-    return fetchy(lat, lon)
+    return fetchyByCoord(lat, lon)
 }
 
 const fetchStation = async (lat, lon) => {
-    return fetchy(lat, lon, 'station')
+    return fetchyByCoord(lat, lon, 'station')
 }
 
 const fetchSegments = async () => {
-    let url = "http://127.0.0.1:8000/segments"
-    const response = await fetch(url, {
-        "headers": {
-            'Content-Type': 'application/json'
-        },
-    });
-
-    return response.json();
+    return fetchy(base_url + "segments");
 }
 
 const fetchNets = async (station, level) => {
-    let url = "http://127.0.0.1:8000/nets/" + level
-    url += '?station=' + station
-    const response = await fetch(url, {
-        "headers": {
-            'Content-Type': 'application/json'
-        },
-    });
-
-    return response.json();
+    return fetchy(base_url + "nets/" + level + '?station=' + station);
 }
 
 const fetchZipcodeSegment = async (station) => {
-    let url = "http://127.0.0.1:8000/nets/zipcode_segments"
-    url += '?station=' + station
-    const response = await fetch(url, {
-        "headers": {
-            'Content-Type': 'application/json'
-        },
-    });
+    return fetchy(base_url + "nets/zipcode_segments?station=" + station);
+}
 
-    return response.json();
+const fetchDistributionBoxes = async () => {
+    return fetchy(base_url + "distributionboxes");
+}
+
+
+const fetchMediumVoltageInstallations = async () => {
+    return fetchy(base_url + "mvoltageinstallations");
 }

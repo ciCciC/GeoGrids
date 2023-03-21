@@ -1,6 +1,7 @@
 const listenerFocusNet = async (map, hoveredStateId) => {
     const ids = ['routeMidden', 'routeLow']
     const sources = ['middenspanningskabels', 'laagspanningskabels']
+
     map.on('mousemove', ids, (e) => {
 
         if (e.features.length > 0) {
@@ -37,7 +38,7 @@ const listenerFocusNet = async (map, hoveredStateId) => {
     });
 }
 
-const listenerNetten = async (map, popupNetten) => {
+const listenerPopupNetten = async (map, popupNetten) => {
     const ids = ['routeMidden', 'routeHoog', 'routeHoogDashed', 'routeLow']
 
     map.on('mousemove', ids, function (e) {
@@ -67,8 +68,11 @@ const listenerSegment = async (map, segmentsPoppup) => {
             .setLngLat(e.lngLat)
             .setHTML(
                 '<p>Station: ' + e.features[0].properties.station + '</p>' +
+                '<p>Capacity Afname MVA: ' + e.features[0].properties.beschikbareCapaciteitAfnameHuidigMva + '</p>' +
                 '<p>Netbeheerder: ' + e.features[0].properties.netbeheerder + '</p>' +
-                '<p>Mean SJV: ' + e.features[0].properties.mu_sjv + '</p>'
+                '<p>SJV (kWh): ' + e.features[0].properties.mu_sjv + '</p>' +
+                '<p>kW: ' + e.features[0].properties.kw.toFixed(2) + '</p>' +
+                '<p>MVA: ' + e.features[0].properties.mva.toFixed(4) + '</p>'
             )
             .addTo(map);
     })
@@ -81,5 +85,19 @@ const listenerSegment = async (map, segmentsPoppup) => {
         for (const popupElElement of popupEl) {
             popupElElement.innerHTML = ''
         }
+    })
+}
+
+const listenerPopupCoords = async (map, popupCoords) => {
+    const ids = ['distributionBoxFill', 'mVoltageInstallsFill']
+    map.on('click', ids, function (e) {
+        popupCoords
+            .setLngLat(e.lngLat)
+            .setHTML(
+                '<p><b>Coords</b></p>' +
+                '<p>long: ' + e.lngLat.lng + '</p>' +
+                '<p>lat: ' + e.lngLat.lat + '</p>'
+            )
+            .addTo(map);
     })
 }

@@ -29,9 +29,13 @@ https://magazines.tennet.eu/open-innovation-programme/open-innovation-programme
 
 ## Preview
 
-Search ![callFlow](/preview/search.png "Search")
+Search ![search](/preview/search.png "Search")
 
-Stations ![callFlow](/preview/stations.png "Stations")
+Stations ![stations](/preview/stations.png "Stations")
+
+Distribution Box ![distribution_box](/preview/distribution_box.png "Distribution Box")
+
+Nets x Station ![nets_x_station](/preview/nets_x_station.png "nets_x_station")
 
 ## Prerequisite
 - install miniforge

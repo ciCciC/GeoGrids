@@ -2,13 +2,13 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
 
     map.addSource('middenspanningskabels', {
         'type': 'geojson',
-        'data': 'http://127.0.0.1:8000/static/middenspanningskabels.geojson',
+        'data': base_url + 'static/middenspanningskabels.geojson',
         'generateId': true
     });
 
     map.addSource('hoogspanningskabels', {
         'type': 'geojson',
-        'data': 'http://127.0.0.1:8000/static/hoogspanningskabels.geojson',
+        'data': base_url + 'static/hoogspanningskabels.geojson',
         'generateId': true
     });
 
@@ -74,5 +74,72 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
 
     await animateDash('routeHoogDashed')
     await listenerFocusNet(map, hoveredStateId)
-    await listenerNetten(map, popupNetten)
+    await listenerPopupNetten(map, popupNetten)
+
+    map.setLayoutProperty('routeMidden', 'visibility', 'none');
+    map.setLayoutProperty('routeHoog', 'visibility', 'none');
+    map.setLayoutProperty('routeHoogDashed', 'visibility', 'none');
+}
+
+const distributionBoxes = async (map) => {
+    fetchDistributionBoxes()
+        .then((data) => {
+
+            if (map.getSource('distribution_box')) {
+                map.getSource('distribution_box').setData(data);
+            } else {
+
+                map.addSource('distribution_box', {
+                    'type': 'geojson',
+                    'data': data,
+                    'generateId': true
+                });
+
+                map.addLayer({
+                    'id': 'distributionBoxFill',
+                    'type': 'circle',
+                    'source': 'distribution_box',
+                    'layout': {},
+                    'paint': {
+                        'circle-color': 'rgba(255,0,0,0)',
+                        'circle-stroke-color': 'rgb(14,218,0)',
+                        'circle-stroke-width': 2,
+                        'circle-stroke-opacity': .5
+                    }
+                });
+            }
+            map.setLayoutProperty('distributionBoxFill', 'visibility', 'none');
+        })
+}
+
+
+const mediumVoltageInstallations = async (map) => {
+    fetchMediumVoltageInstallations()
+        .then((data) => {
+
+            if (map.getSource('m_voltage_installs')) {
+                map.getSource('m_voltage_installs').setData(data);
+            } else {
+
+                map.addSource('m_voltage_installs', {
+                    'type': 'geojson',
+                    'data': data,
+                    'generateId': true
+                });
+
+                map.addLayer({
+                    'id': 'mVoltageInstallsFill',
+                    'type': 'circle',
+                    'source': 'm_voltage_installs',
+                    'layout': {},
+                    'paint': {
+                        'circle-color': 'rgb(255,145,0)',
+                        'circle-stroke-color': 'rgb(0,0,0)',
+                        'circle-stroke-width': 2,
+                        'circle-stroke-opacity': .5
+                    }
+                });
+            }
+            map.setLayoutProperty('mVoltageInstallsFill', 'visibility', 'none');
+        })
 }

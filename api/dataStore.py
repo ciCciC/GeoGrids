@@ -36,9 +36,6 @@ def geo_to_point(lat, lon) -> Point:
 def get_segment(lat, lon):
     address = geo_to_point(lat, lon)
 
-    # To be removed
-    print(f'LAT: {lat}, LON: {lon}')
-
     to_drop = ['peildatum']
 
     destination_segment_idx = address.intersects(catchment_area.geometry)

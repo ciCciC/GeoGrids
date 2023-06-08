@@ -1,5 +1,11 @@
 const layerNet = async (map, popupNetten, hoveredStateId) => {
 
+    map.addSource('reconstructedlines', {
+        'type': 'geojson',
+        'data': base_url + 'static/reconstructed_lines_msi_lsv.geojson',
+        'generateId': true
+    });
+
     map.addSource('middenspanningskabels', {
         'type': 'geojson',
         'data': base_url + 'static/middenspanningskabels.geojson',
@@ -11,6 +17,36 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
         'data': base_url + 'static/hoogspanningskabels.geojson',
         'generateId': true
     });
+
+    map.addLayer({
+        'id': 'routeReconstructedLines',
+        'type': 'line',
+        'source': 'reconstructedlines',
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                '#ff0000',
+                '#00c4ff'
+            ],
+            'line-opacity': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                1,
+                0.5
+            ],
+            'line-width': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                4,
+                2
+            ],
+        }
+    })
 
     map.addLayer({
         'id': 'routeMidden',
@@ -76,6 +112,7 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
     await listenerFocusNet(map, hoveredStateId)
     await listenerPopupNetten(map, popupNetten)
 
+    map.setLayoutProperty('routeReconstructedLines', 'visibility', 'none');
     map.setLayoutProperty('routeMidden', 'visibility', 'none');
     map.setLayoutProperty('routeHoog', 'visibility', 'none');
     map.setLayoutProperty('routeHoogDashed', 'visibility', 'none');

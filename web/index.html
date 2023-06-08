@@ -87,6 +87,10 @@
         <input id="m-voltage-installs" type="checkbox" name="rtoggle" value="mVoltageInstallsFill">
         <label for="m-voltage-installs">Medium voltage installations</label>
     </div>
+    <div class="color_lblue">
+        <input id="reconstructed-lines" type="checkbox" name="rtoggle" value="routeReconstructedLines">
+        <label for="reconstructed-lines">Reconstructed lines</label>
+    </div>
 </div>
 
 <script>
@@ -122,6 +126,8 @@
 
     geoCoder.on('result', (x) => {
         const coords = x.result.geometry.coordinates
+
+        console.log('long: '+coords[0]+', lat: '+coords[1])
 
         fetchSegment(coords[0], coords[1])
             .then((data) => {

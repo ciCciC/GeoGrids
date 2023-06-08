@@ -40,7 +40,6 @@ const fetchDistributionBoxes = async () => {
     return fetchy(base_url + "distributionboxes");
 }
 
-
 const fetchMediumVoltageInstallations = async () => {
     return fetchy(base_url + "mvoltageinstallations");
 }

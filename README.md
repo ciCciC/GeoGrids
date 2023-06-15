@@ -27,6 +27,8 @@ https://magazines.tennet.eu/open-innovation-programme/open-innovation-programme
 孵鋐篆f瘧蜑筴裔罩罧I孵Ⅷ　 i鷆嫩槞i歉皸鱚　 冑縡諛諺彙溘嵳勠尠錣綴麼辨螢
 </pre>
 
+One that started as a TenneT challenge that is currently continuing as an experiment. More info will follow...
+
 ## Preview
 
 Search ![search](/preview/search.png "Search")

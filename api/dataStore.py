@@ -3,7 +3,7 @@ import pyproj
 from shapely import Point
 
 CRS = 4326
-HOURS_IN_YEAR = 8766  # https://nl.wikipedia.org/wiki/Uur#:~:text=Een%20etmaal%20duurt%2024%20uur,jaar%20gemiddeld%20ongeveer%208766%20uur.
+HOURS_IN_YEAR = 8766
 precision = 8
 
 stations = gpd.read_parquet('data/atom/stations.parquet').to_crs(pyproj.CRS.from_epsg(CRS))

@@ -62,6 +62,17 @@ const listenerPopupNetten = async (map, popupNetten) => {
     })
 }
 
+const listenerPopupFootprint = async(map, footprintPoppup) => {
+    map.on('click', 'footprintFills', (e) => {
+        footprintPoppup
+            .setLngLat(e.lngLat)
+            .setHTML(
+                '<p><b>OSMID</b>: ' + e.features[0].properties.osmids + '</p>'
+            )
+            .addTo(map);
+    });
+}
+
 const listenerSegment = async (map, segmentsPoppup) => {
     map.on('mousemove', 'segments_fill', function (e) {
         segmentsPoppup

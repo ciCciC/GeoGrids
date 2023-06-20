@@ -118,6 +118,28 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
     map.setLayoutProperty('routeHoogDashed', 'visibility', 'none');
 }
 
+const layerFootPrint = async (map, popupFootPrint) => {
+    map.addSource('footprints', {
+        'type': 'geojson',
+        'data': base_url + 'static/manual_selection_footprints.geojson',
+        'generateId': true
+    })
+
+    map.addLayer({
+        'id': 'footprintFills',
+        'type': 'fill',
+        'source': 'footprints',
+        'layout': {},
+        'paint': {
+            'fill-color': '#ff0000',
+            'fill-opacity': 0.5
+        }
+    })
+
+    await listenerPopupFootprint(map, popupFootPrint)
+    map.setLayoutProperty('footprintFills', 'visibility', 'none')
+}
+
 const distributionBoxes = async (map) => {
     fetchDistributionBoxes()
         .then((data) => {

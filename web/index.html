@@ -91,20 +91,25 @@
         <input id="reconstructed-lines" type="checkbox" name="rtoggle" value="routeReconstructedLines">
         <label for="reconstructed-lines">Reconstructed lines</label>
     </div>
+    <div class="color_red">
+        <input id="footprint-fills" type="checkbox" name="rtoggle" value="footprintFills">
+        <label for="footprint-fills">Foot-prints</label>
+    </div>
 </div>
 
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2ljaWMiLCJhIjoiY2xkMDh1bzFoMHE5ejNzbzFwOWxjZTE4eCJ9.BVObDkUMFWt_MuzpQf4MYA';
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
-        // style: 'mapbox://styles/mapbox/dark-v11',
+        // style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/mapbox/dark-v11',
         center: [4.895168, 52.370216],
         zoom: 9
     });
 
     let hoveredStateId = null;
     let popupNetten = new mapboxgl.Popup({offset: [0, -40]});
+    let popupFootPrint = new mapboxgl.Popup({offset: [0, -40]});
     let popupCoords = new mapboxgl.Popup();
     let markerStation = new mapboxgl.Marker({color: 'red'});
 
@@ -112,6 +117,7 @@
         distributionBoxes(map);
         mediumVoltageInstallations(map);
         layerNet(map, popupNetten, hoveredStateId);
+        layerFootPrint(map, popupFootPrint);
         listenerPopupCoords(map, popupCoords);
     })
 

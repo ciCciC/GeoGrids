@@ -121,7 +121,7 @@ const layerNet = async (map, popupNetten, hoveredStateId) => {
 const layerFootPrint = async (map, popupFootPrint) => {
     map.addSource('footprints', {
         'type': 'geojson',
-        'data': base_url + 'static/manual_selection_footprints.geojson',
+        'data': base_url + 'static/footprint_manual_selection.geojson',
         'generateId': true
     })
 

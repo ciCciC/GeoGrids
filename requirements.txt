@@ -4,7 +4,7 @@ geopandas~=0.12.2
 numpy
 matplotlib
 missingno
-fastapi~=0.92.0
+fastapi
 uvicorn
 pyproj~=3.4.1
 shapely~=2.0.1

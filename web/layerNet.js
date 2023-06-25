@@ -141,64 +141,107 @@ const layerFootPrint = async (map, popupFootPrint) => {
 }
 
 const distributionBoxes = async (map) => {
-    fetchDistributionBoxes()
-        .then((data) => {
+    map.addSource('distribution_box', {
+        'type': 'geojson',
+        'data': base_url + 'static/laagspanningsverdeelkasten.geojson',
+        'generateId': true
+    });
 
-            if (map.getSource('distribution_box')) {
-                map.getSource('distribution_box').setData(data);
-            } else {
+    map.addLayer({
+        'id': 'distributionBoxFill',
+        'type': 'circle',
+        'source': 'distribution_box',
+        'layout': {},
+        'paint': {
+            'circle-color': 'rgba(255,0,0,0)',
+            'circle-stroke-color': 'rgb(14,218,0)',
+            'circle-stroke-width': 2,
+            'circle-stroke-opacity': .5
+        }
+    });
 
-                map.addSource('distribution_box', {
-                    'type': 'geojson',
-                    'data': data,
-                    'generateId': true
-                });
+    map.setLayoutProperty('distributionBoxFill', 'visibility', 'none');
 
-                map.addLayer({
-                    'id': 'distributionBoxFill',
-                    'type': 'circle',
-                    'source': 'distribution_box',
-                    'layout': {},
-                    'paint': {
-                        'circle-color': 'rgba(255,0,0,0)',
-                        'circle-stroke-color': 'rgb(14,218,0)',
-                        'circle-stroke-width': 2,
-                        'circle-stroke-opacity': .5
-                    }
-                });
-            }
-            map.setLayoutProperty('distributionBoxFill', 'visibility', 'none');
-        })
+    // fetchDistributionBoxes()
+    //     .then((data) => {
+    //
+    //         if (map.getSource('distribution_box')) {
+    //             map.getSource('distribution_box').setData(data);
+    //         } else {
+    //
+    //             map.addSource('distribution_box', {
+    //                 'type': 'geojson',
+    //                 'data': data,
+    //                 'generateId': true
+    //             });
+    //
+    //             map.addLayer({
+    //                 'id': 'distributionBoxFill',
+    //                 'type': 'circle',
+    //                 'source': 'distribution_box',
+    //                 'layout': {},
+    //                 'paint': {
+    //                     'circle-color': 'rgba(255,0,0,0)',
+    //                     'circle-stroke-color': 'rgb(14,218,0)',
+    //                     'circle-stroke-width': 2,
+    //                     'circle-stroke-opacity': .5
+    //                 }
+    //             });
+    //         }
+    //         map.setLayoutProperty('distributionBoxFill', 'visibility', 'none');
+    //     })
 }
 
 
 const mediumVoltageInstallations = async (map) => {
-    fetchMediumVoltageInstallations()
-        .then((data) => {
 
-            if (map.getSource('m_voltage_installs')) {
-                map.getSource('m_voltage_installs').setData(data);
-            } else {
+    map.addSource('m_voltage_installs', {
+        'type': 'geojson',
+        'data': base_url + 'static/middenspanningsinstallaties.geojson',
+        'generateId': true
+    });
 
-                map.addSource('m_voltage_installs', {
-                    'type': 'geojson',
-                    'data': data,
-                    'generateId': true
-                });
+    map.addLayer({
+        'id': 'mVoltageInstallsFill',
+        'type': 'circle',
+        'source': 'm_voltage_installs',
+        'layout': {},
+        'paint': {
+            'circle-color': 'rgb(255,145,0)',
+            'circle-stroke-color': 'rgb(0,0,0)',
+            'circle-stroke-width': 2,
+            'circle-stroke-opacity': .5
+        }
+    });
 
-                map.addLayer({
-                    'id': 'mVoltageInstallsFill',
-                    'type': 'circle',
-                    'source': 'm_voltage_installs',
-                    'layout': {},
-                    'paint': {
-                        'circle-color': 'rgb(255,145,0)',
-                        'circle-stroke-color': 'rgb(0,0,0)',
-                        'circle-stroke-width': 2,
-                        'circle-stroke-opacity': .5
-                    }
-                });
-            }
-            map.setLayoutProperty('mVoltageInstallsFill', 'visibility', 'none');
-        })
+    map.setLayoutProperty('mVoltageInstallsFill', 'visibility', 'none');
+
+    // fetchMediumVoltageInstallations()
+    //     .then((data) => {
+    //
+    //         if (map.getSource('m_voltage_installs')) {
+    //             map.getSource('m_voltage_installs').setData(data);
+    //         } else {
+    //
+    //             map.addSource('m_voltage_installs', {
+    //                 'type': 'geojson',
+    //                 'data': data,
+    //                 'generateId': true
+    //             });
+    //
+    //             map.addLayer({
+    //                 'id': 'mVoltageInstallsFill',
+    //                 'type': 'circle',
+    //                 'source': 'm_voltage_installs',
+    //                 'layout': {},
+    //                 'paint': {
+    //                     'circle-color': 'rgb(255,145,0)',
+    //                     'circle-stroke-color': 'rgb(0,0,0)',
+    //                     'circle-stroke-width': 2,
+    //                     'circle-stroke-opacity': .5
+    //                 }
+    //             });
+    //         }
+    //         map.setLayoutProperty('mVoltageInstallsFill', 'visibility', 'none');
+    //     })
 }

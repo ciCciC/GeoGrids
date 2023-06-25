@@ -11,35 +11,27 @@ const fetchy = async (url) => {
     return response.json();
 }
 
-const fetchyByCoord = async (lat, lon, end = '') => {
-    return fetchy(base_url + end + '?lat=' + lat + '&lon=' + lon);
+const fetchyByCoord = async (lat, lon, router = '') => {
+    return fetchy(base_url + router + '/' + lat + ',' + lon);
 }
 
 
 const fetchSegment = async (lat, lon) => {
-    return fetchyByCoord(lat, lon)
-}
-
-const fetchStation = async (lat, lon) => {
-    return fetchyByCoord(lat, lon, 'station')
+    return fetchyByCoord(lat, lon, 'segments')
 }
 
 const fetchSegments = async () => {
     return fetchy(base_url + "segments");
 }
 
-const fetchNets = async (station, level) => {
-    return fetchy(base_url + "nets/" + level + '?station=' + station);
+const fetchStation = async (lat, lon) => {
+    return fetchyByCoord(lat, lon, 'stations')
+}
+
+const fetchNets = async (station) => {
+    return fetchy(base_url + "nets/" + station);
 }
 
 const fetchZipcodeSegment = async (station) => {
-    return fetchy(base_url + "nets/zipcode_segments?station=" + station);
-}
-
-const fetchDistributionBoxes = async () => {
-    return fetchy(base_url + "distributionboxes");
-}
-
-const fetchMediumVoltageInstallations = async () => {
-    return fetchy(base_url + "mvoltageinstallations");
+    return fetchy(base_url + "nets/zipcode_segments/" + station);
 }

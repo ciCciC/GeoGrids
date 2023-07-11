@@ -27,15 +27,14 @@ https://magazines.tennet.eu/open-innovation-programme/open-innovation-programme
 孵鋐篆f瘧蜑筴裔罩罧I孵Ⅷ　 i鷆嫩槞i歉皸鱚　 冑縡諛諺彙溘嵳勠尠錣綴麼辨螢
 </pre>
 
-## Preview
-
-Search ![search](/asset/search.png "Search")
-
-Stations ![stations](/asset/stations.png "Stations")
-
-Distribution Box ![distribution_box](/asset/distribution_box.png "Distribution Box")
-
-Nets x Station ![nets_x_station](/asset/nets_x_station.png "nets_x_station")
-
 ## Prerequisite
 - see [README.md](/README.md)
+
+## Preview
+
+<p align='center'>
+  <img width='50%' src="/asset/search.png">
+  <img width='50%' src="/asset/stations.png">
+  <img width='50%' src="/asset/distribution_box.png">
+  <img width='50%' src="/asset/nets_x_station.png">
+</p>

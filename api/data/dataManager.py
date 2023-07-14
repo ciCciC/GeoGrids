@@ -2,17 +2,18 @@ import geopandas as gpd
 import pyproj
 from shapely import Point
 from api.settings import ATOM_DIR
+import os
 
 CRS = 4326
 HOURS_IN_YEAR = 8766
 precision = 8
 
-stations = gpd.read_parquet(f'{ATOM_DIR}/stations.parquet').to_crs(pyproj.CRS.from_epsg(CRS))
-catchment_area = gpd.read_parquet(f'{ATOM_DIR}/verzorgingsgebied.parquet').to_crs(pyproj.CRS.from_epsg(CRS))
+stations = gpd.read_parquet(os.path.join(ATOM_DIR, 'stations.parquet')).to_crs(pyproj.CRS.from_epsg(CRS))
+catchment_area = gpd.read_parquet(os.path.join(ATOM_DIR, 'verzorgingsgebied.parquet')).to_crs(pyproj.CRS.from_epsg(CRS))
 
-low_voltage_cables_x_station = gpd.read_parquet(f'{ATOM_DIR}/laagspanningskabels_x_station.pyarrow')
-zipcode_segments_x_station = gpd.read_parquet(f'{ATOM_DIR}/postcode_segments_x_station.pyarrow')
-segments_x_mu_usage = gpd.read_parquet(f'{ATOM_DIR}/segments_x_mu_usage.parquet')
+low_voltage_cables_x_station = gpd.read_parquet(os.path.join(ATOM_DIR, 'laagspanningskabels_x_station.pyarrow'))
+zipcode_segments_x_station = gpd.read_parquet(os.path.join(ATOM_DIR, 'postcode_segments_x_station.pyarrow'))
+segments_x_mu_usage = gpd.read_parquet(os.path.join(ATOM_DIR, 'segments_x_mu_usage.parquet'))
 
 
 def kwh_to_kw(kwh):

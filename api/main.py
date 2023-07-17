@@ -31,4 +31,4 @@ async def health_check():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", log_level="info", reload=True)
+    uvicorn.run("main:app", log_level="info", reload=True, port=5001)

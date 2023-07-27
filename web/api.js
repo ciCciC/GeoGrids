@@ -1,4 +1,4 @@
-const base_url = 'http://127.0.0.1:8000/'
+const base_url = 'http://127.0.0.1:5001/'
 const init = {
     "headers": {
         'Content-Type': 'application/json'

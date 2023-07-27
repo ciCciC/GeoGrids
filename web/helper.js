@@ -37,3 +37,17 @@ const animateDash = async (layerId) => {
 
     animateDashArray(0);
 }
+
+const updateArea = (e) => {
+    const data = draw.getAll();
+    const answer = document.getElementById('calculated-area');
+    if (data.features.length > 0) {
+        const objToStr = JSON.stringify(data)
+        navigator.clipboard.writeText(objToStr);
+        alert(objToStr);
+    } else {
+        answer.innerHTML = '';
+        if (e.type !== 'draw.delete')
+            alert('Click the map to draw a polygon.');
+    }
+}

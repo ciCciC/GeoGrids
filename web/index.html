@@ -26,6 +26,13 @@
       href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
       type="text/css">
 
+<!--Drawing-->
+<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.0/mapbox-gl-draw.css"
+      type="text/css">
+<!--Drawing-->
+
 <div id="map">
     <div id="right" class="sidebar flex-center right collapsed">
         <div class="sidebar-content rounded-rect flex-center">
@@ -47,6 +54,11 @@
             <div id='contentExpectationAfname' class="content"></div>
         </div>
     </div>
+</div>
+
+<div class="calculation-box">
+    <p>Click the map to draw a polygon.</p>
+    <div id="calculated-area"></div>
 </div>
 
 <ul id="buttons">
@@ -107,6 +119,18 @@
         zoom: 9
     });
 
+    const draw = new MapboxDraw({
+        displayControlsDefault: false,
+// Select which mapbox-gl-draw control buttons to add to the map.
+        controls: {
+            polygon: true,
+            trash: true
+        },
+// Set mapbox-gl-draw to draw by default.
+// The user does not have to click the polygon control button first.
+        defaultMode: 'draw_polygon'
+    });
+
     let hoveredStateId = null;
     let popupNetten = new mapboxgl.Popup({offset: [0, -40]});
     let popupFootPrint = new mapboxgl.Popup({offset: [0, -40]});
@@ -117,6 +141,11 @@
         distributionBoxes(map);
         mediumVoltageInstallations(map);
         layerNet(map, popupNetten, hoveredStateId);
+        map.loadImage('./chargepng.png',
+            (error, image) => {
+                if (error) throw error;
+                map.addImage('chargepng', image);
+            })
         layerFootPrint(map, popupFootPrint);
         listenerPopupCoords(map, popupCoords);
     })
@@ -325,6 +354,10 @@
 
     map.addControl(geoCoder);
     map.addControl(new mapboxgl.FullscreenControl());
+    map.addControl(draw);
+    map.on('draw.create', updateArea);
+    map.on('draw.delete', updateArea);
+    map.on('draw.update', updateArea);
 
     document.getElementById('buttons').addEventListener('click', (event) => {
         const buttonType = event.target.id;

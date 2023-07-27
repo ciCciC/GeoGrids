@@ -122,7 +122,8 @@ const layerFootPrint = async (map, popupFootPrint) => {
     map.addSource('footprints', {
         'type': 'geojson',
         // 'data': base_url + 'static/footprint_manual_selection.geojson',
-        'data': base_url + 'static/footprint_post_selection.geojson',
+        // 'data': base_url + 'static/footprint_post_selection.geojson',
+        'data': base_url + 'static/footprint_TMP_selection.geojson',
         'generateId': true
     })
 
@@ -137,8 +138,19 @@ const layerFootPrint = async (map, popupFootPrint) => {
         }
     })
 
+    map.addLayer({
+        'id': 'footprinticons',
+        'type': 'symbol',
+        'source': 'footprints',
+        'layout': {
+            'icon-image': 'chargepng',
+            'icon-size': 0.8
+        }
+    });
+
     await listenerPopupFootprint(map, popupFootPrint)
     map.setLayoutProperty('footprintFills', 'visibility', 'none')
+    // map.setLayoutProperty('footprinticons', 'visibility', 'none')
 }
 
 const distributionBoxes = async (map) => {

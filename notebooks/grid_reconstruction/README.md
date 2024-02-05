@@ -6,8 +6,8 @@
 
 ## Open-source data
 - Liander data is utilized for
-  - Estimation footprints for data compilation
-  - Reconstruction of lvc data that suffers from missingness
+  - [Estimation footprints for data compilation](https://github.com/ciCciC/GeoGrids/blob/main/notebooks/grid_reconstruction/compiling_footprint.ipynb)
+  - [Reconstruction of lvc data that suffers from missingness](https://github.com/ciCciC/GeoGrids/blob/main/notebooks/grid_reconstruction/lvc_reconstructor.ipynb)
 
 ## Compiled Polygons of stations
 <p align='center'>

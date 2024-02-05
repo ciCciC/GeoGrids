@@ -113,8 +113,8 @@
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2ljaWMiLCJhIjoiY2xkMDh1bzFoMHE5ejNzbzFwOWxjZTE4eCJ9.BVObDkUMFWt_MuzpQf4MYA';
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
-        // style: 'mapbox://styles/mapbox/dark-v11',
+        // style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/mapbox/dark-v11',
         center: [4.895168, 52.370216],
         zoom: 9
     });
@@ -141,7 +141,7 @@
         distributionBoxes(map);
         mediumVoltageInstallations(map);
         layerNet(map, popupNetten, hoveredStateId);
-        map.loadImage('./chargepng.png',
+        map.loadImage('./thunder.png',
             (error, image) => {
                 if (error) throw error;
                 map.addImage('chargepng', image);
@@ -354,10 +354,12 @@
 
     map.addControl(geoCoder);
     map.addControl(new mapboxgl.FullscreenControl());
-    map.addControl(draw);
-    map.on('draw.create', updateArea);
-    map.on('draw.delete', updateArea);
-    map.on('draw.update', updateArea);
+
+    // Drawing Polygon functionality
+    // map.addControl(draw);
+    // map.on('draw.create', updateArea);
+    // map.on('draw.delete', updateArea);
+    // map.on('draw.update', updateArea);
 
     document.getElementById('buttons').addEventListener('click', (event) => {
         const buttonType = event.target.id;

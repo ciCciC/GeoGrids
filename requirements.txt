@@ -1,6 +1,6 @@
 jupyter
 pandas
-geopandas~=0.12.2
+geopandas~=0.14.3
 numpy
 matplotlib
 missingno
@@ -8,3 +8,9 @@ fastapi
 uvicorn
 pyproj~=3.4.1
 shapely~=2.0.1
+osmnx
+tqdm
+pyarrow
+folium
+mapclassify
+momepy

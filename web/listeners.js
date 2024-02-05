@@ -67,7 +67,7 @@ const listenerPopupFootprint = async(map, footprintPoppup) => {
         footprintPoppup
             .setLngLat(e.lngLat)
             .setHTML(
-                '<p><b>OSMID</b>: ' + e.features[0].properties.osmids + '</p>'
+                '<p><b>OSMID</b>: ' + e.features[0].properties.osmids + '</p> <br> <p> ( ' + e.lngLat.lat + ', ' + e.lngLat.lng + ' )</p>'
             )
             .addTo(map);
     });

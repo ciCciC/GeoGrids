@@ -8,6 +8,7 @@ CRS = 4326
 HOURS_IN_YEAR = 8766
 precision = 8
 
+# Lianders' stations
 stations = gpd.read_parquet(os.path.join(ATOM_DIR, 'stations.parquet')).to_crs(pyproj.CRS.from_epsg(CRS))
 catchment_area = gpd.read_parquet(os.path.join(ATOM_DIR, 'verzorgingsgebied.parquet')).to_crs(pyproj.CRS.from_epsg(CRS))
 

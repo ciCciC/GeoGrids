@@ -4,7 +4,12 @@ One that started as a TenneT challenge that is currently continuing as an experi
 
 This repository has two objectives, namely
 - An application for interactive visualization of energy consumption on zipcode level along with electrical substation properties using open source data
+  - [api](https://github.com/ciCciC/GeoGrids/tree/main/api)
+  - [web](https://github.com/ciCciC/GeoGrids/tree/main/web)
+- Grid optimization, estimating energy usage change direction over time utilizing Linear Multilevel Modeling
+  - [notebooks](https://github.com/ciCciC/GeoGrids/tree/main/notebooks/grid_optimization)
 - A function that can estimate the path and electrical substation for a given point of interest using open source data
+  - [notebooks](https://github.com/ciCciC/GeoGrids/tree/main/notebooks/grid_reconstruction)
 
 
 # Getting Started

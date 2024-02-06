@@ -14,6 +14,7 @@
   <img width='50%' src="/asset/station_polygons.png">
 </p>
 
-| A                  | B                  | C                  | D                  |
-|--------------------|--------------------|--------------------|--------------------|
-| ![](/asset/p0.png) | ![](/asset/p1.png) | ![](/asset/p2.png) | ![](/asset/p3.png) |
+| A                                                                                                                                                                              | B                                                                                   | C                                                                      | D                                                                   |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|------------------------------------------------------------------------|---------------------------------------------------------------------|
+| ![](/asset/p0.png)                                                                                                                                                             | ![](/asset/p1.png)                                                                  | ![](/asset/p2.png)                                                     | ![](/asset/p3.png)                                                  |
+| Retrieves polygons (P) based on point of interest (POI) within a certain distance, along with the medium voltage cables (MS) that exist within the bounds of unary unions of P | Filters P given distance distribution between P and MS conditioned with a threshold | Filters P based on empirically selected degree centrality as threshold | Appends missing P (computed manually) to recover missing footprints |

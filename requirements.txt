@@ -8,7 +8,7 @@ fastapi
 uvicorn
 pyproj~=3.4.1
 shapely~=2.0.1
-osmnx
+osmnx~=1.9.1
 tqdm
 pyarrow
 folium
